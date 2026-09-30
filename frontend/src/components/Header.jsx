@@ -17,6 +17,8 @@ export default function Header() {
     (path) => location.pathname === path || (path !== '/' && location.pathname.startsWith(path))
   );
 
+  const activeCategory = new URLSearchParams(location.search).get('category');
+
   function handleSearch(e) {
     e.preventDefault();
     navigate(`/products${search ? `?q=${encodeURIComponent(search)}` : ''}`);
@@ -61,10 +63,14 @@ export default function Header() {
       {showCategoryNav && (
         <nav className="category-nav">
           <NavLink to="/" end>Home</NavLink>
-          {CATEGORIES.map((c) => (
-            <NavLink key={c.name} to={`/products?category=${encodeURIComponent(c.name)}`}>
+          {CATEGORIES.filter((c) => c.name !== 'Home').map((c) => (
+            <Link
+              key={c.name}
+              to={`/products?category=${encodeURIComponent(c.name)}`}
+              className={activeCategory === c.name ? 'active' : undefined}
+            >
               {c.name}
-            </NavLink>
+            </Link>
           ))}
         </nav>
       )}
