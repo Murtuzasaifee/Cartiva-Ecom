@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>External_Order_Id__c</fullName>
+    <externalId>false</externalId>
+    <label>External Order ID</label>
+    <length>50</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+    <description>Order number from the Cartiva backend (e.g. ORD-10045).</description>
+</CustomField>

@@ -1,0 +1,50 @@
+<template>
+    <lightning-card title="Case Triage Dashboard" icon-name="standard:case">
+        <lightning-button
+            slot="actions"
+            label="Refresh"
+            icon-name="utility:refresh"
+            onclick={handleRefresh}
+        ></lightning-button>
+
+        <div class="slds-p-horizontal_medium slds-p-bottom_small">
+            <template if:true={error}>
+                <p class="slds-text-color_error">Unable to load dashboard data.</p>
+            </template>
+
+            <div class="slds-grid slds-gutters slds-wrap slds-m-bottom_medium">
+                <div class="slds-col slds-size_1-of-4">
+                    <div class="slds-box slds-text-align_center">
+                        <p class="slds-text-heading_large">{stats.totalCases}</p>
+                        <p class="slds-text-body_small">Total Cases</p>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <div class="slds-box slds-text-align_center">
+                        <p class="slds-text-heading_large">{stats.triagedCount}</p>
+                        <p class="slds-text-body_small">Triaged</p>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <div class="slds-box slds-text-align_center">
+                        <p class="slds-text-heading_large">{stats.pendingCount}</p>
+                        <p class="slds-text-body_small">Pending</p>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <div class="slds-box slds-text-align_center">
+                        <p class="slds-text-heading_large">{stats.overriddenCount}</p>
+                        <p class="slds-text-body_small">Overridden</p>
+                    </div>
+                </div>
+            </div>
+
+            <lightning-datatable
+                key-field="Id"
+                data={cases}
+                columns={columns}
+                hide-checkbox-column
+            ></lightning-datatable>
+        </div>
+    </lightning-card>
+</template>

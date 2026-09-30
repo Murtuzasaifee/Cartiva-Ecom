@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cartiva — System Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --canvas: #f3f5f9;
+    --dot: #d7dce4;
+    --ink: #12141a;
+    --muted: #6b7280;
+    --line: #c7cedb;
+    --card: #ffffff;
+
+    --blue: #2e5aff;
+    --blue-dark: #12266e;
+    --blue-soft: #e8edff;
+
+    --java: #2e8b57;
+    --java-soft: #e5f5ec;
+
+    --sf: #00a1e0;
+    --sf-dark: #032d60;
+    --sf-soft: #e2f4fc;
+
+    --coral: #ff7a45;
+    --font-display: "Sora", sans-serif;
+    --font-body: "Plus Jakarta Sans", sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: var(--font-body);
+    color: var(--ink);
+    background-color: var(--canvas);
+    background-image: radial-gradient(var(--dot) 1.2px, transparent 1.2px);
+    background-size: 22px 22px;
+    padding: 44px 28px 60px;
+  }
+
+  .page { max-width: 1280px; margin: 0 auto; }
+
+  header { text-align: center; margin-bottom: 12px; }
+  .brand { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .brand__mark {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: linear-gradient(135deg, #6d93ff 0%, var(--blue-dark) 100%);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .brand__mark span { color: white; font-family: var(--font-display); font-weight: 800; font-size: 17px; }
+  .brand__mark::after { content: ""; position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 999px; background: var(--coral); }
+  .brand__name { font-family: var(--font-display); font-weight: 700; font-size: 20px; }
+  h1 { font-family: var(--font-display); font-size: 30px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 6px; }
+  header p { color: var(--muted); font-size: 14px; margin: 0 0 36px; }
+
+  /* ================= Diagram frame ================= */
+  .diagram {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 40px 36px;
+    box-shadow: 0 1px 2px rgba(18,20,26,0.04), 0 20px 40px -24px rgba(18,20,26,0.18);
+  }
+
+  /* ================= Grid: client row + tier row, area-based so the
+     client cell sits exactly above the Frontend column ================= */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 96px 1fr 150px 1fr;
+    grid-template-areas:
+      "client .    .    .    .  "
+      "front  arr1 back arr2 sf ";
+    row-gap: 8px;
+    column-gap: 6px;
+    align-items: stretch;
+  }
+
+  .client-cell {
+    grid-area: client;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .client-box {
+    display: flex; align-items: center; gap: 10px;
+    border: 1.5px solid var(--line);
+    background: #fafbfc;
+    border-radius: 12px;
+    padding: 10px 20px;
+    width: fit-content;
+  }
+  .client-box svg { width: 20px; height: 20px; color: var(--muted); }
+  .client-box b { font-family: var(--font-display); font-size: 14px; }
+  .client-box span.sub { color: var(--muted); font-size: 12px; margin-left: 4px; }
+  .client-arrow { font-size: 22px; line-height: 1; color: var(--line); }
+
+  .tier {
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fcfcfd;
+    display: flex;
+    flex-direction: column;
+  }
+  .tier--frontend { grid-area: front; }
+  .tier--backend  { grid-area: back; }
+  .tier--sf       { grid-area: sf; }
+
+  .tier__header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1.5px solid var(--line);
+  }
+  .tier__header svg { width: 20px; height: 20px; flex-shrink: 0; }
+  .tier__header-text { min-width: 0; }
+  .tier__title { font-family: var(--font-display); font-weight: 700; font-size: 15px; line-height: 1.2; }
+  .tier__stack { font-family: var(--font-mono); font-size: 10.5px; opacity: 0.8; }
+
+  .tier--frontend .tier__header { background: var(--blue-soft); color: var(--blue-dark); }
+  .tier--backend  .tier__header { background: var(--java-soft); color: #1d5f3f; }
+  .tier--sf       .tier__header { background: var(--sf-dark); color: white; }
+  .tier--sf       .tier__stack  { color: rgba(255,255,255,0.75); }
+
+  .tier__body { padding: 14px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+
+  .component {
+    display: flex; align-items: center; gap: 10px;
+    background: white;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--comp-accent, var(--blue));
+    border-radius: 8px;
+    padding: 9px 11px;
+  }
+  .component svg { width: 15px; height: 15px; color: var(--comp-accent, var(--blue)); flex-shrink: 0; }
+  .component span { font-size: 12.5px; font-weight: 600; }
+
+  .tier--frontend .component { --comp-accent: var(--blue); }
+  .tier--backend  .component { --comp-accent: var(--java); }
+  .tier--sf       .tier__body { background: linear-gradient(180deg, var(--sf-dark) 0%, #04407e 100%); }
+  .tier--sf       .component { --comp-accent: #ffffff; background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.22); }
+  .tier--sf       .component svg { color: white; }
+  .tier--sf       .component span { color: white; }
+
+  /* ================= Arrow columns between tiers (plain glyphs — robust, no layout math) ================= */
+  .arrow-col {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 6px;
+  }
+  .arrow-col--1 { grid-area: arr1; }
+  .arrow-col--2 { grid-area: arr2; }
+
+  .arrow-glyph { font-size: 26px; line-height: 1; color: var(--line); }
+  .arrow-label {
+    font-size: 10px; font-weight: 700; color: var(--muted);
+    text-align: center; line-height: 1.4;
+    text-transform: uppercase; letter-spacing: 0.02em;
+    white-space: normal;
+    max-width: 100%;
+  }
+  .arrow-label.accent { color: var(--blue-dark); }
+  .arrow-label.sf-accent { color: var(--sf-dark); }
+
+  /* ================= Legend ================= */
+  .legend {
+    margin-top: 28px;
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+  }
+  .pill {
+    display: flex; align-items: center; gap: 6px;
+    background: white; border: 1px solid var(--line);
+    border-radius: 999px; padding: 7px 14px;
+    font-size: 12.5px; font-weight: 600;
+  }
+  .pill i { width: 8px; height: 8px; border-radius: 999px; display: inline-block; }
+
+  footer.note { text-align: center; margin-top: 22px; color: var(--muted); font-size: 12px; }
+
+  /* ================= Responsive: stack vertically ================= */
+  @media (max-width: 980px) {
+    .grid {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "client"
+        "front"
+        "arr1"
+        "back"
+        "arr2"
+        "sf";
+    }
+    .arrow-col { flex-direction: row; padding: 10px 0; gap: 12px; }
+    .arrow-glyph { transform: rotate(90deg); }
+    .arrow-label { text-align: left; white-space: normal; }
+  }
+
+  @media print {
+    body { background: white; padding: 12px; }
+    .diagram { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="brand">
+      <span class="brand__mark"><span>C</span></span>
+      <span class="brand__name">Cartiva</span>
+    </div>
+    <h1>System Architecture</h1>
+    <p>High-level component view</p>
+  </header>
+
+  <div class="diagram">
+    <div class="grid">
+
+      <!-- CUSTOMER — connects only to the Frontend, directly above it -->
+      <div class="client-cell">
+        <div class="client-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          <b>Customer</b><span class="sub">Web Browser</span>
+        </div>
+        <span class="client-arrow">↓</span>
+      </div>
+
+      <!-- FRONTEND -->
+      <div class="tier tier--frontend">
+        <div class="tier__header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg>
+          <div class="tier__header-text">
+            <div class="tier__title">Frontend</div>
+            <div class="tier__stack">React · Vite · React Router</div>
+          </div>
+        </div>
+        <div class="tier__body">
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg><span>Storefront &amp; catalog</span></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 2-1.58l1.65-7.42H5.12"/></svg><span>Cart &amp; checkout</span></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4 7.55 4.24M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg><span>Order tracking</span></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 2-3 4M12 17h.01"/></svg><span>Support &amp; tickets</span></div>
+        </div>
+      </div>
+
+      <!-- ARROW: Frontend -> Backend -->
+      <div class="arrow-col arrow-col--1">
+        <span class="arrow-label accent">REST / JSON</span>
+        <span class="arrow-glyph">→</span>
+      </div>
+
+      <!-- BACKEND -->
+      <div class="tier tier--backend">
+        <div class="tier__header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/></svg>
+          <div class="tier__header-text">
+            <div class="tier__title">Backend</div>
+            <div class="tier__stack">Java · Spring Boot · Docker</div>
+          </div>
+        </div>
+        <div class="tier__body">
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg><span>REST controllers</span></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg><span>Service layer</span></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg><span>H2 database</span></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg><span>Scheduled sync jobs</span></div>
+        </div>
+      </div>
+
+      <!-- ARROW: Backend <-> Salesforce -->
+      <div class="arrow-col arrow-col--2">
+        <span class="arrow-label accent">OAuth2 JWT + REST</span>
+        <span class="arrow-glyph">⇄</span>
+        <span class="arrow-label">Status sync · 30s poll</span>
+      </div>
+
+      <!-- SALESFORCE -->
+      <div class="tier tier--sf">
+        <div class="tier__header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.3-2A4.5 4.5 0 0 0 6.5 19h11z"/></svg>
+          <div class="tier__header-text">
+            <div class="tier__title">Salesforce CRM</div>
+            <div class="tier__stack">Apex · Lightning Web Components</div>
+          </div>
+        </div>
+        <div class="tier__body">
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg><span>Case trigger</span></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 9v6M20 6H10a4 4 0 0 0-4 4"/><circle cx="20" cy="6" r="1"/></svg><span>Rule &amp; priority engine</span></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>Agent console (LWC)</span></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Audit trail</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="legend">
+    <span class="pill"><i style="background:var(--blue)"></i>React</span>
+    <span class="pill"><i style="background:var(--java)"></i>Java / Spring Boot</span>
+    <span class="pill"><i style="background:#888"></i>Docker</span>
+    <span class="pill"><i style="background:#888"></i>H2</span>
+    <span class="pill"><i style="background:var(--sf)"></i>Salesforce / Apex</span>
+    <span class="pill"><i style="background:var(--coral)"></i>OAuth2 JWT Bearer</span>
+  </div>
+
+  <footer class="note">Cartiva</footer>
+
+</div>
+</body>
+</html>
