@@ -29,7 +29,7 @@ export default function TicketDetail() {
       });
     }
     load();
-    const interval = setInterval(load, 10000); // backend syncs ticket status roughly every 30s
+    const interval = setInterval(load, 10000); // backend syncs ticket status roughly every 10s
     return () => {
       cancelled = true;
       clearInterval(interval);

@@ -131,22 +131,33 @@
   .tier__body { padding: 14px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 
   .component {
-    display: flex; align-items: center; gap: 10px;
+    display: flex; align-items: flex-start; gap: 10px;
     background: white;
     border: 1px solid var(--line);
     border-left: 3px solid var(--comp-accent, var(--blue));
     border-radius: 8px;
     padding: 9px 11px;
   }
-  .component svg { width: 15px; height: 15px; color: var(--comp-accent, var(--blue)); flex-shrink: 0; }
-  .component span { font-size: 12.5px; font-weight: 600; }
+  .component svg { width: 15px; height: 15px; color: var(--comp-accent, var(--blue)); flex-shrink: 0; margin-top: 1px; }
+  .component__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .component span.component__title { font-size: 12.5px; font-weight: 600; line-height: 1.3; }
+  .component span.component__meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--muted);
+    line-height: 1.4;
+    white-space: normal;
+    word-break: break-word;
+  }
 
   .tier--frontend .component { --comp-accent: var(--blue); }
   .tier--backend  .component { --comp-accent: var(--java); }
   .tier--sf       .tier__body { background: linear-gradient(180deg, var(--sf-dark) 0%, #04407e 100%); }
   .tier--sf       .component { --comp-accent: #ffffff; background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.22); }
   .tier--sf       .component svg { color: white; }
-  .tier--sf       .component span { color: white; }
+  .tier--sf       .component span.component__title { color: white; }
+  .tier--sf       .component span.component__meta { color: rgba(255,255,255,0.7); }
 
   /* ================= Arrow columns between tiers (plain glyphs — robust, no layout math) ================= */
   .arrow-col {
@@ -180,7 +191,49 @@
   }
   .pill i { width: 8px; height: 8px; border-radius: 999px; display: inline-block; }
 
+  /* ================= Technical details ================= */
+  .details {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .details__card {
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    background: var(--card);
+    overflow: hidden;
+  }
+  .details__head {
+    padding: 12px 16px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    border-bottom: 1.5px solid var(--line);
+  }
+  .details__card--frontend .details__head { background: var(--blue-soft); color: var(--blue-dark); }
+  .details__card--backend  .details__head { background: var(--java-soft); color: #1d5f3f; }
+  .details__card--sf       .details__head { background: var(--sf-dark); color: white; }
+  .details__body { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+  .details__row { display: flex; flex-direction: column; gap: 2px; }
+  .details__label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.03em; color: var(--muted);
+  }
+  .details__value { font-size: 12.5px; line-height: 1.5; }
+  .details__value code {
+    font-family: var(--font-mono); font-size: 11px;
+    background: #f1f3f8; border: 1px solid var(--line);
+    border-radius: 5px; padding: 1px 5px;
+  }
+  .details__value ul { margin: 2px 0 0; padding-left: 16px; }
+  .details__value li { margin-bottom: 2px; }
+
   footer.note { text-align: center; margin-top: 22px; color: var(--muted); font-size: 12px; }
+
+  @media (max-width: 980px) {
+    .details { grid-template-columns: 1fr; }
+  }
 
   /* ================= Responsive: stack vertically ================= */
   @media (max-width: 980px) {
@@ -239,10 +292,10 @@
           </div>
         </div>
         <div class="tier__body">
-          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg><span>Storefront &amp; catalog</span></div>
-          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 2-1.58l1.65-7.42H5.12"/></svg><span>Cart &amp; checkout</span></div>
-          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4 7.55 4.24M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg><span>Order tracking</span></div>
-          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 2-3 4M12 17h.01"/></svg><span>Support &amp; tickets</span></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg><div class="component__text"><span class="component__title">Storefront &amp; catalog</span><span class="component__meta">GET /api/products, /api/products/{id}</span></div></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 2-1.58l1.65-7.42H5.12"/></svg><div class="component__text"><span class="component__title">Cart &amp; checkout</span><span class="component__meta">CartContext (React Context) · POST /api/orders</span></div></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4 7.55 4.24M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg><div class="component__text"><span class="component__title">Order tracking</span><span class="component__meta">GET /api/orders/{id}, /api/customers/{id}/orders</span></div></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 2-3 4M12 17h.01"/></svg><div class="component__text"><span class="component__title">Support &amp; tickets</span><span class="component__meta">POST /api/tickets · polls GET /api/tickets/{id} every 10s</span></div></div>
         </div>
       </div>
 
@@ -250,6 +303,7 @@
       <div class="arrow-col arrow-col--1">
         <span class="arrow-label accent">REST / JSON</span>
         <span class="arrow-glyph">→</span>
+        <span class="arrow-label">HTTP · Axios/fetch client</span>
       </div>
 
       <!-- BACKEND -->
@@ -262,10 +316,11 @@
           </div>
         </div>
         <div class="tier__body">
-          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg><span>REST controllers</span></div>
-          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg><span>Service layer</span></div>
-          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg><span>H2 database</span></div>
-          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg><span>Scheduled sync jobs</span></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg><div class="component__text"><span class="component__title">REST controllers</span><span class="component__meta">/api/products · /api/customers · /api/orders · /api/tickets · /api/salesforce</span></div></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg><div class="component__text"><span class="component__title">Service layer</span><span class="component__meta">DTO mapping · SalesforceCaseService · SalesforceMapper</span></div></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg><div class="component__text"><span class="component__title">H2 database</span><span class="component__meta">Spring Data JPA · seeded on boot by DataSeeder</span></div></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg><div class="component__text"><span class="component__title">CaseStatusPollingJob</span><span class="component__meta">@Scheduled fixedDelay · cartiva.polling.interval-ms=10000</span></div></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.6 5.6L1 10m22 4-4.6 4.4A9 9 0 0 1 3.51 15"/></svg><div class="component__text"><span class="component__title">TicketSyncRetryJob</span><span class="component__meta">@Scheduled fixedDelay · cartiva.retry.interval-ms=60000</span></div></div>
         </div>
       </div>
 
@@ -273,7 +328,7 @@
       <div class="arrow-col arrow-col--2">
         <span class="arrow-label accent">OAuth2 JWT + REST</span>
         <span class="arrow-glyph">⇄</span>
-        <span class="arrow-label">Status sync · 30s poll</span>
+        <span class="arrow-label">Status sync · 10s poll · API v60.0</span>
       </div>
 
       <!-- SALESFORCE -->
@@ -286,10 +341,10 @@
           </div>
         </div>
         <div class="tier__body">
-          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg><span>Case trigger</span></div>
-          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 9v6M20 6H10a4 4 0 0 0-4 4"/><circle cx="20" cy="6" r="1"/></svg><span>Rule &amp; priority engine</span></div>
-          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>Agent console (LWC)</span></div>
-          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Audit trail</span></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg><div class="component__text"><span class="component__title">Case trigger</span><span class="component__meta">CaseTriageService — fires on Case insert/update</span></div></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 9v6M20 6H10a4 4 0 0 0-4 4"/><circle cx="20" cy="6" r="1"/></svg><div class="component__text"><span class="component__title">Rule &amp; priority engine</span><span class="component__meta">CaseTriageResult · CaseTriageRuleTestDataFactory</span></div></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><div class="component__text"><span class="component__title">Agent console (LWC)</span><span class="component__meta">caseTriageDetail component · manual override support</span></div></div>
+          <div class="component"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><div class="component__text"><span class="component__title">Audit trail</span><span class="component__meta">CaseTriageOverrideController — logs manual overrides</span></div></div>
         </div>
       </div>
 
@@ -303,6 +358,79 @@
     <span class="pill"><i style="background:#888"></i>H2</span>
     <span class="pill"><i style="background:var(--sf)"></i>Salesforce / Apex</span>
     <span class="pill"><i style="background:var(--coral)"></i>OAuth2 JWT Bearer</span>
+  </div>
+
+  <div class="details">
+    <div class="details__card details__card--frontend">
+      <div class="details__head">Frontend — React / Vite</div>
+      <div class="details__body">
+        <div class="details__row">
+          <span class="details__label">Routing</span>
+          <span class="details__value">React Router v6, client-side. Key routes: <code>/</code>, <code>/products</code>, <code>/cart</code>, <code>/orders</code>, <code>/support</code>, <code>/tickets/:id</code>.</span>
+        </div>
+        <div class="details__row">
+          <span class="details__label">State</span>
+          <span class="details__value">Cart state via React Context (<code>CartContext</code>); no global store — page components fetch directly through a thin <code>api</code> client wrapper over <code>fetch</code>.</span>
+        </div>
+        <div class="details__row">
+          <span class="details__label">Ticket status refresh</span>
+          <span class="details__value">Ticket detail page polls <code>GET /api/tickets/:id</code> every <code>10s</code> via <code>setInterval</code>, cancelled on unmount.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="details__card details__card--backend">
+      <div class="details__head">Backend — Spring Boot</div>
+      <div class="details__body">
+        <div class="details__row">
+          <span class="details__label">REST endpoints</span>
+          <span class="details__value">
+            <ul>
+              <li><code>/api/products</code>, <code>/api/products/{id}</code></li>
+              <li><code>/api/customers/{id}</code>, <code>/orders</code>, <code>/tickets</code></li>
+              <li><code>/api/orders</code> (POST), <code>/api/orders/{id}</code></li>
+              <li><code>/api/tickets</code> (POST), <code>/api/tickets/{id}</code></li>
+              <li><code>/api/salesforce/status</code>, <code>/cases/{id}</code>, <code>/cases/retry</code> (POST)</li>
+            </ul>
+          </span>
+        </div>
+        <div class="details__row">
+          <span class="details__label">Scheduled jobs</span>
+          <span class="details__value">
+            <ul>
+              <li><code>CaseStatusPollingJob</code> — polls Salesforce Cases modified since last run, syncs triage/resolution fields onto the matching local <code>Ticket</code>. Interval: <code>cartiva.polling.interval-ms</code> (default <code>10000</code>ms), toggled by <code>SALESFORCE_POLLING_ENABLED</code>.</li>
+              <li><code>TicketSyncRetryJob</code> — retries tickets that failed to push to Salesforce. Interval: <code>cartiva.retry.interval-ms</code> (default <code>60000</code>ms).</li>
+            </ul>
+          </span>
+        </div>
+        <div class="details__row">
+          <span class="details__label">Persistence</span>
+          <span class="details__value">H2 in-memory DB via Spring Data JPA repositories, seeded on startup by <code>DataSeeder</code> (products, demo customer, sample tickets).</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="details__card details__card--sf">
+      <div class="details__head">Salesforce — Apex / LWC</div>
+      <div class="details__body">
+        <div class="details__row">
+          <span class="details__label">Auth</span>
+          <span class="details__value">Server-to-server OAuth2 JWT Bearer flow (<code>SalesforceCaseService</code>), private key mounted at <code>SALESFORCE_JWT_PRIVATE_KEY_PATH</code>; calls Salesforce REST API <code>v60.0</code>.</span>
+        </div>
+        <div class="details__row">
+          <span class="details__label">Case triage</span>
+          <span class="details__value"><code>CaseTriageService</code> trigger-driven logic evaluates configurable priority/routing rules against incoming Cases; overrides supported via <code>CaseTriageOverrideController</code>.</span>
+        </div>
+        <div class="details__row">
+          <span class="details__label">Agent UI</span>
+          <span class="details__value"><code>caseTriageDetail</code> LWC surfaces triage results and audit trail inside the Salesforce console for support agents.</span>
+        </div>
+        <div class="details__row">
+          <span class="details__label">Direction</span>
+          <span class="details__value">Backend → Salesforce: ticket created via REST push on submit. Salesforce → Backend: Case status changes flow back through the 10s polling job (planned migration to Platform Events).</span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <footer class="note">Cartiva</footer>

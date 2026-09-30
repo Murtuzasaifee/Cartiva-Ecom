@@ -29,6 +29,6 @@ salesforce:
 cartiva:
   polling:
     enabled: ${SALESFORCE_POLLING_ENABLED:true}
-    interval-ms: 30000
+    interval-ms: 10000
   retry:
     interval-ms: 60000

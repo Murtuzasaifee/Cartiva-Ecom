@@ -42,7 +42,7 @@ public class CaseStatusPollingJob {
         this.schedulingConfig = schedulingConfig;
     }
 
-    @Scheduled(fixedDelayString = "${cartiva.polling.interval-ms:30000}")
+    @Scheduled(fixedDelayString = "${cartiva.polling.interval-ms:10000}")
     public void poll() {
         if (!schedulingConfig.getPolling().isEnabled() || !caseService.isAvailable()) {
             return;
