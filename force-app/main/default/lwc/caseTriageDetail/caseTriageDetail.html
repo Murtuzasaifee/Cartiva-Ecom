@@ -3,33 +3,38 @@
         <template if:true={hasData}>
             <div class="slds-p-horizontal_medium slds-p-bottom_medium">
                 <div class="slds-grid slds-gutters slds-wrap">
-                    <div class="slds-col slds-size_1-of-2">
-                        <p class="slds-text-title">Customer</p>
-                        <p>{customerName}</p>
+                    <div class="slds-col slds-size_1-of-2 triage-field">
+                        <span class="triage-field__label">Customer</span>
+                        <span class="triage-field__value">{customerName}</span>
                     </div>
-                    <div class="slds-col slds-size_1-of-2">
-                        <p class="slds-text-title">Order</p>
-                        <p>{externalOrderId} <lightning-formatted-number value={orderAmount} format-style="currency"></lightning-formatted-number></p>
+                    <div class="slds-col slds-size_1-of-2 triage-field">
+                        <span class="triage-field__label">Ticket #</span>
+                        <span class="triage-field__value">{externalTicketId}</span>
                     </div>
-                    <div class="slds-col slds-size_1-of-2">
-                        <p class="slds-text-title">Category</p>
-                        <p>{category}</p>
+                    <div class="slds-col slds-size_1-of-2 triage-field">
+                        <span class="triage-field__label">Order</span>
+                        <span class="triage-field__value">{externalOrderId} <lightning-formatted-number value={orderAmount} format-style="currency"></lightning-formatted-number></span>
                     </div>
-                    <div class="slds-col slds-size_1-of-2">
-                        <p class="slds-text-title">Priority</p>
-                        <p>{priority}</p>
+                    <div class="slds-col slds-size_1-of-2 triage-field">
+                        <span class="triage-field__label">Category</span>
+                        <span class="triage-field__value">{category}</span>
                     </div>
-                    <div class="slds-col slds-size_1-of-2">
-                        <p class="slds-text-title">Recommended Team</p>
-                        <p>{team}</p>
+                    <div class="slds-col slds-size_1-of-2 triage-field">
+                        <span class="triage-field__label">Priority</span>
+                        <span class="triage-field__value">{priority}</span>
                     </div>
-                    <div class="slds-col slds-size_1-of-2">
-                        <p class="slds-text-title">SLA</p>
-                        <p>{slaHours} hours</p>
+                    <div class="slds-col slds-size_1-of-2 triage-field">
+                        <span class="triage-field__label">Recommended Team</span>
+                        <span class="triage-field__value">{team}</span>
                     </div>
-                    <div class="slds-col slds-size_1-of-2">
-                        <p class="slds-text-title">SLA Due</p>
+                    <div class="slds-col slds-size_1-of-2 triage-field">
+                        <span class="triage-field__label">SLA</span>
+                        <span class="triage-field__value">{slaHours} hours</span>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 triage-field">
+                        <span class="triage-field__label">SLA Due</span>
                         <lightning-formatted-date-time
+                            class="triage-field__value"
                             value={slaDueDate}
                             year="numeric"
                             month="short"
@@ -38,13 +43,13 @@
                             minute="2-digit"
                         ></lightning-formatted-date-time>
                     </div>
-                    <div class="slds-col slds-size_1-of-2">
-                        <p class="slds-text-title">Triage Status</p>
-                        <p>{status}</p>
+                    <div class="slds-col slds-size_1-of-2 triage-field">
+                        <span class="triage-field__label">Triage Status</span>
+                        <span class="triage-field__value">{status}</span>
                     </div>
-                    <div class="slds-col slds-size_1-of-1">
-                        <p class="slds-text-title">Reason</p>
-                        <p>{reason}</p>
+                    <div class="slds-col slds-size_1-of-1 triage-field">
+                        <span class="triage-field__label">Reason</span>
+                        <span class="triage-field__value">{reason}</span>
                     </div>
                 </div>
 

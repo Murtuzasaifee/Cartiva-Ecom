@@ -6,6 +6,7 @@ import applyOverride from '@salesforce/apex/CaseTriageOverrideController.applyOv
 import updateFulfillmentStatus from '@salesforce/apex/CaseResolutionController.updateFulfillmentStatus';
 import resolveCase from '@salesforce/apex/CaseResolutionController.resolveCase';
 
+import EXTERNAL_TICKET_ID_FIELD from '@salesforce/schema/Case.External_Ticket_Id__c';
 import EXTERNAL_ORDER_ID_FIELD from '@salesforce/schema/Case.External_Order_Id__c';
 import ORDER_AMOUNT_FIELD from '@salesforce/schema/Case.Order_Amount__c';
 import CATEGORY_FIELD from '@salesforce/schema/Case.Triage_Category__c';
@@ -24,6 +25,7 @@ const CONTACT_NAME_FIELD = 'Case.Contact.Name';
 
 const FIELDS = [
     CONTACT_NAME_FIELD,
+    EXTERNAL_TICKET_ID_FIELD,
     EXTERNAL_ORDER_ID_FIELD,
     ORDER_AMOUNT_FIELD,
     CATEGORY_FIELD,
@@ -90,6 +92,9 @@ export default class CaseTriageDetail extends LightningElement {
     get customerName() {
         const contact = this.wiredCaseResult.data?.fields?.Contact?.value;
         return contact ? contact.fields.Name.value : null;
+    }
+    get externalTicketId() {
+        return getFieldValue(this.wiredCaseResult.data, EXTERNAL_TICKET_ID_FIELD);
     }
     get externalOrderId() {
         return getFieldValue(this.wiredCaseResult.data, EXTERNAL_ORDER_ID_FIELD);
