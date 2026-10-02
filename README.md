@@ -35,8 +35,9 @@ flowchart TD
     BE <==>|"OAuth2 JWT + REST<br/>status sync · 10s poll"| SF
 ```
 
-Full component/data-flow breakdown (endpoints, job config keys, class names): open
-[`docs/architecture-diagram.html`](docs/architecture-diagram.html) in a browser.
+Full component/data-flow breakdown (endpoints, scheduled-job config keys, exact class names,
+file:line source references) — open [`docs/cartiva-system-architecture.html`](docs/cartiva-system-architecture.html)
+in a browser.
 
 ```
 force-app/    Salesforce DX project (Apex, LWC, custom objects/fields, metadata)
